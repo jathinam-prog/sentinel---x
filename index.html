@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SENTINEL X | Threat Intelligence</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#06101d;color:#eaf5ff;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:20px 6%;background:#091727;
+ display:flex;justify-content:space-between;
+ align-items:center;border-bottom:1px solid #24425c;
+}
+.logo{font-size:24px;font-weight:bold;letter-spacing:2px}
+.logo span{color:#45d9f5}
+nav a{color:#a6bdd2;text-decoration:none;margin-left:18px}
+nav a:hover{color:#45d9f5}
+.container{width:92%;max-width:1200px;margin:auto}
+.hero{padding:55px 0 30px}
+.hero h1{font-size:43px;margin:12px 0}
+.hero h1 span{color:#45d9f5}
+.hero p{color:#91a9c1}
+.tag{color:#45d9f5;font-size:12px;letter-spacing:2px}
+.grid{
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:18px;margin:20px 0;
+}
+.panel{
+ background:#102239;border:1px solid #24425c;
+ border-radius:15px;padding:22px;
+}
+.panel h2{font-size:19px;margin-bottom:15px}
+.stats{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:12px;
+}
+.stat{background:#0a1929;padding:15px;border-radius:10px}
+.stat strong{font-size:24px;color:#45d9f5;display:block}
+.stat small{color:#91a9c1}
+input{
+ width:100%;padding:13px;margin:12px 0;
+ background:#071523;border:1px solid #34516c;
+ border-radius:8px;color:white;
+}
+button{
+ padding:12px 17px;background:#45d9f5;
+ border:0;border-radius:8px;font-weight:bold;
+ cursor:pointer;margin:5px 5px 5px 0;
+}
+button:hover{opacity:.8}
+.result{
+ padding:14px;background:#071523;
+ border-radius:9px;margin-top:12px;
+ color:#a6bdd2;overflow-wrap:anywhere;
+}
+.good{border:1px solid #43d6a0;color:#8debc4}
+.warn{border:1px solid #ffc46b;color:#ffdc9b}
+.bad{border:1px solid #ff647c;color:#ffadb7}
+ul{padding-left:20px;margin:8px 0}
+.radar{
+ width:280px;height:280px;margin:20px auto;
+ border-radius:50%;position:relative;
+ border:1px solid #45d9f5;
+ background:
+ repeating-radial-gradient(circle,transparent 0 44px,#27516b 45px 46px),
+ linear-gradient(90deg,transparent 49.5%,#27516b 50%,transparent 50.5%),
+ linear-gradient(0deg,transparent 49.5%,#27516b 50%,transparent 50.5%);
+ overflow:hidden;
+}
+.radar:before{
+ content:"";position:absolute;inset:0;border-radius:50%;
+ background:conic-gradient(transparent 0deg,#45d9f555 40deg,transparent 80deg);
+ animation:rotate 4s linear infinite;
+}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.blip{
+ position:absolute;width:9px;height:9px;
+ border-radius:50%;animation:pulse 1.5s infinite;
+}
+@keyframes pulse{50%{opacity:.3;transform:scale(.6)}}
+.news{padding:13px 0;border-bottom:1px solid #24425c}
+.news a{color:#45d9f5}
+.news p{color:#91a9c1;font-size:14px;margin:6px 0}
+.quote{font-size:21px;color:#45d9f5;margin:18px 0}
+footer{
+ text-align:center;padding:25px;
+ color:#91a9c1;border-top:1px solid #24425c;
+}
+@media(max-width:750px){
+ .grid{grid-template-columns:1fr}
+ header{flex-direction:column;gap:15px}
+ nav a{margin:5px;font-size:12px}
+ .hero h1{font-size:34px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">SENTINEL <span>X</span></div>
+ <nav>
+  <a href="#radar">Radar</a>
+  <a href="#scanner">Scanner</a>
+  <a href="#news">Updates</a>
+  <a href="#awareness">Awareness</a>
+ </nav>
+</header>
+
+<div class="container">
+
+<section class="hero">
+ <div class="tag">CYBER THREAT INTELLIGENCE PLATFORM</div>
+ <h1>See threats. Stay <span>protected.</span></h1>
+ <p>Monitor cyber threats, analyze suspicious URLs and stay informed.</p>
+</section>
+
+<div class="stats">
+ <div class="stat"><strong id="signals">04</strong><small>Demo radar signals</small></div>
+ <div class="stat"><strong id="scans">00</strong><small>URLs analyzed</small></div>
+ <div class="stat"><strong>24/7</strong><small>Cyber awareness</small></div>
+</div>
+
+<div class="grid">
+
+<!-- RADAR -->
+
+<section class="panel" id="radar">
+ <h2>◉ Cyber Threat Radar</h2>
+ <p style="color:#91a9c1;font-size:13px">
+  Simulated threat signals for project demonstration.
+ </p>
+ <div class="radar" id="radarBox"></div>
+ <button onclick="refreshRadar()">Refresh Radar</button>
+ <div class="result" id="radarInfo">
+  Radar simulation active.
+ </div>
+</section>
+
+<!-- URL SCANNER -->
+
+<section class="panel" id="scanner">
+ <h2>⌕ Phishing URL Scanner</h2>
+ <p style="color:#91a9c1">Enter a URL for basic risk analysis.</p>
+
+ <input id="url" placeholder="https://example.com">
+
+ <button onclick="scanURL()">Analyze URL</button>
+ <button onclick="clearURL()">Clear</button>
+
+ <div class="result" id="urlResult">
+  Waiting for URL...
+ </div>
+</section>
+
+<!-- MALWARE -->
+
+<section class="panel">
+ <h2>🛡 Malware Detection Module</h2>
+ <p style="color:#91a9c1">
+  Select a file to inspect its basic metadata.
+ </p>
+
+ <input type="file" id="file">
+
+ <button onclick="inspectFile()">Inspect File</button>
+
+ <div class="result" id="fileResult">
+  No file selected.
+ </div>
+</section>
+
+<!-- NEWS -->
+
+<section class="panel" id="news">
+ <h2>📰 Cybercrime Updates & Resources</h2>
+
+ <div class="news">
+  <b>Indian Cyber Crime Portal</b>
+  <p>Report cybercrime and find reporting information.</p>
+  <a href="https://cybercrime.gov.in/" target="_blank">
+   Visit official portal →
+  </a>
+ </div>
+
+ <div class="news">
+  <b>CERT-In Security Advisories</b>
+  <p>Explore cybersecurity alerts and vulnerability advisories.</p>
+  <a href="https://www.cert-in.org.in/" target="_blank">
+   Visit CERT-In →
+  </a>
+ </div>
+
+ <div class="news">
+  <b>Cyber Swachhta Kendra</b>
+  <p>Cybersecurity awareness and botnet cleaning resources.</p>
+  <a href="https://www.csk.gov.in/" target="_blank">
+   Visit website →
+  </a>
+ </div>
+
+ <div class="news">
+  <b>Cyber Financial Fraud Helpline</b>
+  <p>Call 1930 immediately if you experience cyber financial fraud in India.</p>
+ </div>
+
+ <p style="color:#91a9c1;font-size:12px;margin-top:12px">
+  Official resources. These links are not an automatically updated news feed.
+ </p>
+</section>
+
+<!-- AWARENESS -->
+
+<section class="panel" id="awareness">
+ <h2>✦ Cyber Awareness Quote</h2>
+
+ <div class="quote" id="quote">
+  Loading quote...
+ </div>
+
+ <button onclick="newQuote()">Next Quote ↻</button>
+ <button onclick="copyQuote()">Copy Quote</button>
+</section>
+
+<section class="panel">
+ <h2>⚠ Stay Safe Online</h2>
+ <p style="color:#91a9c1;line-height:2">
+  ✔ Never share your OTP.<br>
+  ✔ Verify website addresses.<br>
+  ✔ Avoid unknown APK downloads.<br>
+  ✔ Use strong and unique passwords.<br>
+  ✔ Never transfer money under pressure.
+ </p>
+</section>
+
+</div>
+</div>
+
+<footer>
+ SENTINEL X | Cyber Security Awareness Project
+ <br>Your Digital World. Protected.
+</footer>
+
+<script>
+
+// RADAR SIMULATION
+
+function refreshRadar(){
+
+ const radar=document.getElementById("radarBox");
+ radar.innerHTML="";
+
+ const colors=["#ff647c","#ffc46b","#43d6a0"];
+ const types=["High-risk","Medium-risk","Low-risk"];
+
+ let count=4+Math.floor(Math.random()*5);
+
+ for(let i=0;i<count;i++){
+
+  let dot=document.createElement("div");
+
+  let index=Math.floor(Math.random()*3);
+
+  dot.className="blip";
+  dot.style.background=colors[index];
+  dot.style.boxShadow="0 0 12px "+colors[index];
+
+  dot.style.left=(10+Math.random()*80)+"%";
+  dot.style.top=(10+Math.random()*80)+"%";
+
+  radar.appendChild(dot);
+ }
+
+ document.getElementById("signals").innerText=count;
+
+ document.getElementById("radarInfo").innerText=
+ count+" simulated signals displayed. Not live attack data.";
+}
+
+// URL ANALYSIS
+
+let scanCount=0;
+
+function scanURL(){
+
+ let value=document.getElementById("url").value.trim();
+ let result=document.getElementById("urlResult");
+
+ if(!value){
+  result.className="result warn";
+  result.innerText="Please enter a URL.";
+  return;
+ }
+
+ let address;
+
+ try{
+  address=new URL(value.includes("://")?value:"https://"+value);
+ }catch{
+  result.className="result bad";
+  result.innerText="Invalid URL format.";
+  return;
+ }
+
+ if(!["http:","https:"].includes(address.protocol)){
+  result.className="result bad";
+  result.innerText="Unsupported URL protocol.";
+  return;
+ }
+
+ let risk=0;
+ let reasons=[];
+ let host=address.hostname.toLowerCase();
+
+ if(address.protocol==="http:"){
+  risk+=2;
+  reasons.push("No HTTPS connection.");
+ }
+
+ if(/^\\d{1,3}(\\.\\d{1,3}){3}$/.test(host)){
+  risk+=3;
+  reasons.push("IP address used as website host.");
+ }
+
+ if(value.length>100){
+  risk++;
+  reasons.push("Unusually long URL.");
+ }
+
+ if(host.includes("xn--")){
+  risk+=2;
+  reasons.push("Encoded domain name detected.");
+ }
+
+ if((host.match(/\\./g)||[]).length>=4){
+  risk++;
+  reasons.push("Unusually many subdomains.");
+ }
+
+ if(address.href.includes("@")){
+  risk+=2;
+  reasons.push("Potentially confusing @ symbol.");
+ }
+
+ if(/login|verify|urgent|account|payment|wallet|password/i.test(address.href)){
+  risk++;
+  reasons.push("Contains common phishing lure words.");
+ }
+
+ scanCount++;
+
+ document.getElementById("scans").innerText=
+ String(scanCount).padStart(2,"0");
+
+ let level=risk>=5?"HIGH":risk>=2?"MEDIUM":"LOW";
+
+ result.className="result "+
+ (level==="HIGH"?"bad":level==="MEDIUM"?"warn":"good");
+
+ result.innerHTML=
+ "<h3>"+level+" RISK INDICATOR</h3>"+
+ "<p>Heuristic score: "+risk+"</p>"+
+ (reasons.length?
+ "<ul>"+reasons.map(x=>"<li>"+x+"</li>").join("")+"</ul>":
+ "<p>No basic warning patterns found.</p>")+
+ "<p>Educational result only. This is not a verified phishing verdict.</p>";
+}
+
+function clearURL(){
+ document.getElementById("url").value="";
+ document.getElementById("urlResult").className="result";
+ document.getElementById("urlResult").innerText="Waiting for URL...";
+}
+
+// FILE INSPECTION - METADATA ONLY
+
+async function inspectFile(){
+
+ let file=document.getElementById("file").files[0];
+ let result=document.getElementById("fileResult");
+
+ if(!file){
+  result.className="result warn";
+  result.innerText="Select a file first.";
+  return;
+ }
+
+ let extension=file.name.split(".").pop().toLowerCase();
+
+ let details={
+  apk:"Android application package",
+  exe:"Windows executable",
+  pdf:"PDF document",
+  zip:"Compressed archive",
+  js:"JavaScript file"
+ };
+
+ result.className="result warn";
+
+ result.innerHTML=
+ "<h3>FILE INFORMATION</h3>"+
+ "<p>Name: "+file.name.replace(/[&<>"']/g,"")+"</p>"+
+ "<p>Size: "+(file.size/1024).toFixed(2)+" KB</p>"+
+ "<p>Type: "+(details[extension]||"Unknown file type")+"</p>"+
+ "<p>Actual malware scanning has not been performed.</p>";
+}
+
+// RANDOM QUOTES
+
+const quotes=[
+ "Think before you click. Stay one step ahead.",
+ "Your OTP is your secret. Keep it that way.",
+ "Cyber safety begins with awareness.",
+ "Pause before you pay. Verify before you trust.",
+ "A suspicious link deserves a second look.",
+ "Your digital identity deserves protection.",
+ "Don't let urgency become a hacker's advantage.",
+ "Strong passwords build stronger protection.",
+ "Be smart online. Stay alert offline.",
+ "One careless click can cost more than you think.",
+ "Verify the source before trusting the message.",
+ "Security is not a product. It is a habit.",
+ "Never let fear make your digital decisions.",
+ "Protect your data like you protect your valuables."
+];
+
+let previous=-1;
+
+function newQuote(){
+
+ let next;
+
+ do{
+  next=Math.floor(Math.random()*quotes.length);
+ }while(next===previous);
+
+ previous=next;
+
+ document.getElementById("quote").innerText=
+ "“"+quotes[next]+"”";
+}
+
+function copyQuote(){
+ let text=document.getElementById("quote").innerText;
+
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(text)
+  .then(()=>alert("Quote copied!"))
+  .catch(()=>alert(text));
+ }else{
+  alert(text);
+ }
+}
+
+// INITIALIZE
+
+refreshRadar();
+newQuote();
+
+</script>
+
+</body>
+</html>
+
